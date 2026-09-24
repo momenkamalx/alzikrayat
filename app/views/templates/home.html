@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<div class="container py-5">
+  <div class="row align-items-center g-4">
+    <div class="col-md-7">
+      <p class="text-body-secondary mb-2">A place to remember</p>
+      <h1 class="display-5 mb-3">Keep your memory and share your moment</h1>
+      <p class="text-body-secondary mb-4">Alzikrayat is a place to upload memories with the people you love</p>
+      {% if session.user %}
+        <a href="{{ url_for('photo_create') }}" class="btn btn-primary me-2">Upload a photo</a>
+      {% else %}
+        <a href="{{ url_for('register') }}" class="btn btn-primary me-2">Create an account</a>
+      {% endif %}
+      <a href="#photo-gallery" class="btn btn-outline-light">Browse gallery</a>
+    </div>
+    <div class="col-md-5">
+      <div class="photo-preview" style="aspect-ratio:4/5;">Featured memory</div>
+    </div>
+  </div>
+
+  <div class="row text-center mt-5 g-3">
+    <div class="col-4"><div class="fs-3 fw-semibold" style="color:var(--amber);">{{ stats.photos }}</div><div class="small text-body-secondary">Photos shared</div></div>
+    <div class="col-4"><div class="fs-3 fw-semibold" style="color:var(--amber);">{{ stats.members }}</div><div class="small text-body-secondary">Members</div></div>
+    <div class="col-4"><div class="fs-3 fw-semibold" style="color:var(--amber);">{{ stats.comments }}</div><div class="small text-body-secondary">Comments</div></div>
+  </div>
+</div>
+
+<div class="container py-5" id="photo-gallery">
+  <div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
+    <h2 class="h4 mb-0">Recent uploads</h2>
+    <div class="btn-group btn-group-sm" id="layoutSwitcher" role="group">
+      <button type="button" class="btn btn-outline-light active" data-cols="4">3-col</button>
+      <button type="button" class="btn btn-outline-light" data-cols="3">4-col</button>
+      <button type="button" class="btn btn-outline-light" data-cols="12">List</button>
+    </div>
+  </div>
+
+  <div class="row g-3" id="photoGrid">
+    {% for p in photos %}
+    <div class="col-md-4 gallery-item">
+      <a href="{{ url_for('photo_show', photo_id=p.id) }}" class="card text-decoration-none">
+        <div class="photo-thumbnail">Photo #{{ p.id }}</div>
+        <div class="card-body">
+          <h3 class="h6 mb-1 text-body">{{ p.title }}</h3>
+          <div class="small text-body-secondary">by {{ p.author }}</div>
+        </div>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="py-5" style="background:var(--card-bg);border-top:1px solid var(--line);" id="about">
+  <div class="container">
+    <h2 class="h4 mb-3">About Alzikrayat</h2>
+    <p class="text-body-secondary mb-2" style="max-width:640px;">Alzikrayat is your safe place to put your memories so you can remember that speical day.</p>
+    <p class="text-body-secondary" style="max-width:640px;">Every account gets a personal memory gallery</p>
+  </div>
+</div>
+
+{% endblock %}

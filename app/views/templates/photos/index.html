@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Gallery{% endblock %}
+{% block content %}
+
+<div class="container py-5">
+  <div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
+    <h2 class="h4 mb-0">All photos</h2>
+    <div class="btn-group btn-group-sm" id="layoutSwitcher" role="group">
+      <button type="button" class="btn btn-outline-light active" data-cols="4">3-col</button>
+      <button type="button" class="btn btn-outline-light" data-cols="3">4-col</button>
+      <button type="button" class="btn btn-outline-light" data-cols="12">List</button>
+    </div>
+  </div>
+
+  {% if not photos %}
+    <p class="text-body-secondary">Nothing uploaded yet — be the first.</p>
+  {% else %}
+  <div class="row g-3" id="photoGrid">
+    {% for p in photos %}
+    <div class="col-md-4 gallery-item">
+      <div class="card position-relative">
+        <a href="{{ url_for('photo_show', photo_id=p.id) }}" class="text-decoration-none">
+          <div class="photo-thumbnail">Photo #{{ p.id }}</div>
+          <div class="card-body">
+            <h3 class="h6 mb-1 text-body">{{ p.title }}</h3>
+            <div class="small text-body-secondary">by {{ p.author }}</div>
+          </div>
+        </a>
+        {% if session.user and session.user.id == p.user_id %}
+        <form action="{{ url_for('photo_delete', photo_id=p.id) }}" method="POST"
+              class="position-absolute top-0 end-0 m-2" onsubmit="return confirm('Delete this photo?');">
+          <button type="submit" class="btn btn-sm btn-danger">✕</button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}

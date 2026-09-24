@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}{{ photo.title }}{% endblock %}
+{% block content %}
+
+<div class="container py-5">
+  <div class="row g-5">
+    <div class="col-md-7">
+      <div class="photo-preview">Photo #{{ photo.id }} — full resolution</div>
+    </div>
+    <div class="col-md-5">
+      <h1 class="h3">{{ photo.title }}</h1>
+      <div class="d-flex align-items-center gap-2 text-body-secondary small my-3">
+        <span class="user-avatar">{{ photo.author[0]|upper }}</span>
+        <span>{{ photo.author }} · {{ photo.date }}</span>
+      </div>
+      <p class="text-body-secondary">{{ photo.description }}</p>
+
+      {% if session.user and session.user.id == photo.user_id %}
+      <form action="{{ url_for('photo_delete', photo_id=photo.id) }}" method="POST"
+            onsubmit="return confirm('Delete this photo permanently?');" class="mt-2">
+        <button type="submit" class="btn btn-outline-danger btn-sm">Delete photo</button>
+      </form>
+      {% endif %}
+
+      <hr class="my-4">
+      <h3 class="h6">Comments ({{ comments|length }})</h3>
+      <div id="commentList">
+        {% for c in comments %}
+        <div class="d-flex gap-2 mb-3">
+          <span class="user-avatar">{{ c.who[0]|upper }}</span>
+          <div class="card px-3 py-2 flex-grow-1">
+            <div class="small fw-semibold">{{ c.who }} <span class="text-body-secondary fw-normal">{{ c.when }}</span></div>
+            <div class="small">{{ c.text }}</div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      {% if session.user %}
+      <form class="d-flex gap-2 mt-3" id="commentForm" action="{{ url_for('comment_store', photo_id=photo.id) }}" method="POST">
+        <input type="text" class="form-control" name="comment" placeholder="Add a comment…" maxlength="500" required>
+        <button type="submit" class="btn btn-primary">Post</button>
+      </form>
+      {% else %}
+      <p class="text-body-secondary small">Log in to leave a comment.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}
