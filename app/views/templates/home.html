@@ -11,7 +11,7 @@
       {% if session.user %}
         <a href="{{ url_for('photo_create') }}" class="btn btn-primary me-2">Upload a photo</a>
       {% else %}
-        <a href="{{ url_for('register') }}" class="btn btn-primary me-2">Create an account</a>
+        <a href="{{ url_for('login') }}" class="btn btn-primary me-2">Create an account</a>
       {% endif %}
       <a href="#photo-gallery" class="btn btn-outline-light">Browse gallery</a>
     </div>

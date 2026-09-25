@@ -4,11 +4,7 @@ from datetime import datetime
 
 
 def create_app():
-    """
-    Application factory. Flask is used strictly to listen for requests and
-    render templates — routing/dispatch logic still lives in routes.py,
-    and (later) controllers/models handle business logic + raw SQL by hand.
-    """
+    
     app = Flask(
         __name__,
         template_folder="views/templates",
