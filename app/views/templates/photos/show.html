@@ -5,7 +5,7 @@
 <div class="container py-5">
   <div class="row g-5">
     <div class="col-md-7">
-      <div class="photo-preview">Photo #{{ photo.id }} — full resolution</div>
+      <img src="{{ url_for('static', filename='uploads/' + photo.file_name) }}" class="photo-preview" alt="{{ photo.title }}">
     </div>
     <div class="col-md-5">
       <h1 class="h3">{{ photo.title }}</h1>

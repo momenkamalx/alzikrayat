@@ -1,37 +1,53 @@
 
 from flask import render_template, request, redirect, url_for, session
-from app.controllers import auth_controller
+from app.controllers import auth_controller , photo_controller
+from app.models.photo import get_all_photos, get_photo
 
-PLACEHOLDER_PHOTOS = [
-    {"id": 1, "title": "al-Nile", "author": "Ahmad", "user_id": 1},
-    {"id": 2, "title": "Omdurman big Market", "author": "Ali", "user_id": 2},
-]
+
 
 PLACEHOLDER_COMMENTS = [
     {"photo_id": 2, "who": "Youssef", "when": "2026-08-14 21:03", "text": "This is beautifL"},
-    {"photo_id": 1, "who": "Salma", "when": "2026-08-15 08:41", "text": "The light on the water"},
+    
 ]
+
+
+def _map_photo(row):
+    return {
+        "id": row["id"],
+        "title": row["title"],
+        "file_name": row["file_name"],
+        "user_id": row["user_id"],
+        "author": f'{row["first_name"]} {row["last_name"]}'
+    }
+
 
 
 def register_routes(app):
 
     @app.route("/")
     def home():
-        stats = {"photos": 2480, "members": 612, "comments": 5109}
-        return render_template("home.html", photos=PLACEHOLDER_PHOTOS, stats=stats)
+        photos = [_map_photo(r) for r in get_all_photos()]
+        stats = {"photos": len(photos), "members": 2, "comments": len(PLACEHOLDER_COMMENTS)}
+        return render_template("home.html", photos=photos, stats=stats)
 
     @app.route("/photos")
     def gallery():
-        return render_template("photos/index.html", photos=PLACEHOLDER_PHOTOS)
+        photos = [_map_photo(r) for r in get_all_photos()]
+        return render_template("photos/index.html", photos=photos)
 
     @app.route("/photo/<int:photo_id>")
     def photo_show(photo_id):
-        photo = next((p for p in PLACEHOLDER_PHOTOS if p["id"] == photo_id), PLACEHOLDER_PHOTOS[0])
-        photo = {**photo, "date": "2026-08-14", "description": "Taken from the Tuti bridge just after sunset."}
+        row = get_photo(photo_id)
+        if not row:
+            return redirect(url_for("gallery"))
+        photo = {
+            **_map_photo(row),
+            "description": row["description"],
+            "date": row["date_time"].strftime("%Y-%m-%d")
+        }
         comments = [c for c in PLACEHOLDER_COMMENTS if c["photo_id"] == photo_id]
         return render_template("photos/show.html", photo=photo, comments=comments)
-    
-    
+
     @app.route("/photo/create")
     def photo_create():
         if not session.get("user"):
@@ -40,17 +56,20 @@ def register_routes(app):
 
     @app.route("/photo/store", methods=["POST"])
     def photo_store():
-        
+        if not session.get("user"):
+            return redirect(url_for("login"))
+        file = request.files.get("photo")
+        photo_controller.store(request.form, file, session["user"]["id"])
         return redirect(url_for("gallery"))
 
     @app.route("/photo/<int:photo_id>/delete", methods=["POST"])
     def photo_delete(photo_id):
-        
+        if session.get("user"):
+            photo_controller.delete(photo_id, session["user"]["id"])
         return redirect(url_for("gallery"))
 
     @app.route("/photo/<int:photo_id>/comment", methods=["POST"])
     def comment_store(photo_id):
-        
         return redirect(url_for("photo_show", photo_id=photo_id))
 
     @app.route("/login", methods=["GET", "POST"])
@@ -68,3 +87,6 @@ def register_routes(app):
     def logout():
         session.clear()
         return redirect(url_for("home"))
+    
+    
+    

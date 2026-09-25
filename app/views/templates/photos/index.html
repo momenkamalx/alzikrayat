@@ -20,7 +20,7 @@
     <div class="col-md-4 gallery-item">
       <div class="card position-relative">
         <a href="{{ url_for('photo_show', photo_id=p.id) }}" class="text-decoration-none">
-          <div class="photo-thumbnail">Photo #{{ p.id }}</div>
+          <img src="{{ url_for('static', filename='uploads/' + p.file_name) }}" class="photo-thumbnail" alt="{{ p.title }}">
           <div class="card-body">
             <h3 class="h6 mb-1 text-body">{{ p.title }}</h3>
             <div class="small text-body-secondary">by {{ p.author }}</div>

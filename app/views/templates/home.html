@@ -16,7 +16,11 @@
       <a href="#photo-gallery" class="btn btn-outline-light">Browse gallery</a>
     </div>
     <div class="col-md-5">
-      <div class="photo-preview" style="aspect-ratio:4/5;">Featured memory</div>
+      {% if photos %}
+        <img src="{{ url_for('static', filename='uploads/' + photos[0].file_name) }}" class="photo-preview" style="aspect-ratio:4/5;" alt="Featured memory">
+      {% else %}
+        <div class="photo-preview" style="aspect-ratio:4/5;">No photos yet</div>
+      {% endif %}
     </div>
   </div>
 
@@ -41,7 +45,7 @@
     {% for p in photos %}
     <div class="col-md-4 gallery-item">
       <a href="{{ url_for('photo_show', photo_id=p.id) }}" class="card text-decoration-none">
-        <div class="photo-thumbnail">Photo #{{ p.id }}</div>
+       <img src="{{ url_for('static', filename='uploads/' + p.file_name) }}" class="photo-thumbnail" alt="{{ p.title }}">
         <div class="card-body">
           <h3 class="h6 mb-1 text-body">{{ p.title }}</h3>
           <div class="small text-body-secondary">by {{ p.author }}</div>
