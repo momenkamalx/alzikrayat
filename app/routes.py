@@ -1,14 +1,7 @@
-
 from flask import render_template, request, redirect, url_for, session
-from app.controllers import auth_controller , photo_controller
+from app.controllers import auth_controller, photo_controller, comment_controller
 from app.models.photo import get_all_photos, get_photo
-
-
-
-PLACEHOLDER_COMMENTS = [
-    {"photo_id": 2, "who": "Youssef", "when": "2026-08-14 21:03", "text": "This is beautifL"},
-    
-]
+from app.models.comment import get_comments_for_photo
 
 
 def _map_photo(row):
@@ -21,13 +14,12 @@ def _map_photo(row):
     }
 
 
-
 def register_routes(app):
 
     @app.route("/")
     def home():
         photos = [_map_photo(r) for r in get_all_photos()]
-        stats = {"photos": len(photos), "members": 2, "comments": len(PLACEHOLDER_COMMENTS)}
+        stats = {"photos": len(photos), "members": 2, "comments": 0}
         return render_template("home.html", photos=photos, stats=stats)
 
     @app.route("/photos")
@@ -45,7 +37,18 @@ def register_routes(app):
             "description": row["description"],
             "date": row["date_time"].strftime("%Y-%m-%d")
         }
-        comments = [c for c in PLACEHOLDER_COMMENTS if c["photo_id"] == photo_id]
+        raw_comments = get_comments_for_photo(photo_id)
+        print("DEBUG RAW:", raw_comments)
+        comments = [
+            {
+                "id": c["id"],
+                "user_id": c["user_id"],
+                "who": f'{c["first_name"]} {c["last_name"]}',
+                "when": c["date_time"].strftime("%Y-%m-%d %H:%M"),
+                "text": c["comment"]
+            }
+            for c in raw_comments
+        ]
         return render_template("photos/show.html", photo=photo, comments=comments)
 
     @app.route("/photo/create")
@@ -70,7 +73,17 @@ def register_routes(app):
 
     @app.route("/photo/<int:photo_id>/comment", methods=["POST"])
     def comment_store(photo_id):
+        if session.get("user"):
+            comment_controller.store(photo_id, session["user"]["id"], request.form.get("comment", ""))
         return redirect(url_for("photo_show", photo_id=photo_id))
+
+    @app.route("/comment/<int:comment_id>/delete", methods=["POST"])
+    def comment_delete(comment_id):
+        if session.get("user"):
+            photo_id = request.form.get("photo_id")
+            comment_controller.delete(comment_id, session["user"]["id"])
+            return redirect(url_for("photo_show", photo_id=photo_id))
+        return redirect(url_for("login"))
 
     @app.route("/login", methods=["GET", "POST"])
     def login():
@@ -87,6 +100,3 @@ def register_routes(app):
     def logout():
         session.clear()
         return redirect(url_for("home"))
-    
-    
-    
