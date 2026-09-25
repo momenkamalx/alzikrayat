@@ -17,3 +17,11 @@ def create_user(first_name, last_name, email, password_hash):
         )
         conn.commit()
     conn.close()
+    
+def count_all_users():
+    conn = get_connection()
+    with conn.cursor() as cur:
+        cur.execute("SELECT COUNT(*) AS total FROM users")
+        result = cur.fetchone()
+    conn.close()
+    return result["total"]

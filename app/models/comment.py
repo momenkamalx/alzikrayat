@@ -33,9 +33,19 @@ def get_comment(comment_id):
     conn.close()
     return result
 
+def count_all_comments():
+    conn = get_connection()
+    with conn.cursor() as cur:
+        cur.execute("SELECT COUNT(*) AS total FROM comments")
+        result = cur.fetchone()
+    conn.close()
+    return result["total"]
+
 def delete_comment(comment_id):
     conn = get_connection()
     with conn.cursor() as cur:
         cur.execute("DELETE FROM comments WHERE id = %s", (comment_id,))
         conn.commit()
     conn.close()
+    
+    

@@ -1,7 +1,9 @@
-from flask import render_template, request, redirect, url_for, session
+from flask import render_template, request, redirect, url_for, session, flash
 from app.controllers import auth_controller, photo_controller, comment_controller
 from app.models.photo import get_all_photos, get_photo
-from app.models.comment import get_comments_for_photo
+from app.models.comment import get_comments_for_photo, count_all_comments
+from app.models.user import count_all_users
+
 
 
 def _map_photo(row):
@@ -19,7 +21,7 @@ def register_routes(app):
     @app.route("/")
     def home():
         photos = [_map_photo(r) for r in get_all_photos()]
-        stats = {"photos": len(photos), "members": 2, "comments": 0}
+        stats = {"photos": len(photos), "members": count_all_users(), "comments": count_all_comments()}
         return render_template("home.html", photos=photos, stats=stats)
 
     @app.route("/photos")
@@ -62,7 +64,10 @@ def register_routes(app):
         if not session.get("user"):
             return redirect(url_for("login"))
         file = request.files.get("photo")
-        photo_controller.store(request.form, file, session["user"]["id"])
+        success, error = photo_controller.store(request.form, file, session["user"]["id"])
+        if not success:
+            flash(error)
+            return redirect(url_for("photo_create"))
         return redirect(url_for("gallery"))
 
     @app.route("/photo/<int:photo_id>/delete", methods=["POST"])

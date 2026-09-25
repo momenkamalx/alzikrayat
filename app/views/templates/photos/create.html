@@ -6,6 +6,11 @@
   <div class="card p-4" style="max-width:480px;width:100%;">
     <h2 class="h4 mb-1">Add a photo</h2>
     <p class="text-body-secondary small mb-4">JPEG or PNG, up to 8MB.</p>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="alert alert-danger small py-2">{{ messages[0] }}</div>
+      {% endif %}
+    {% endwith %}
 
     <form id="uploadForm" action="{{ url_for('photo_store') }}" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
       <div class="mb-3">
