@@ -31,3 +31,8 @@ a:hover{color:#f0b25a;}
 .user-avatar{width:32px;height:32px;border-radius:50%;background:var(--amber);color:#1A1200;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.85rem;}
 
 footer{background:var(--card-bg);border-top:1px solid var(--line);color:#8b8e99;}
+
+
+#mentionList{max-height:180px;overflow-y:auto;}
+#mentionList .list-group-item{background:var(--card-bg);color:var(--bs-body-color);border-color:var(--line);font-size:14px;}
+#mentionList .list-group-item:hover{background:var(--bs-body-bg);}

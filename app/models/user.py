@@ -25,3 +25,11 @@ def count_all_users():
         result = cur.fetchone()
     conn.close()
     return result["total"]
+
+def get_all_users():
+    conn = get_connection()
+    with conn.cursor() as cur:
+        cur.execute("SELECT id, first_name, last_name FROM users ORDER BY first_name")
+        result = cur.fetchall()
+    conn.close()
+    return result

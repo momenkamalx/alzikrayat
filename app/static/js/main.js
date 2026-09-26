@@ -1,4 +1,4 @@
-// Grid switcher — toggles Bootstrap column class on each item
+
 (function () {
   const switcher = document.getElementById('layoutSwitcher');
   const grid = document.getElementById('photoGrid');
@@ -16,7 +16,7 @@
   });
 })();
 
-// Login / Register toggle
+// Login / Register 
 (function () {
   const loginForm = document.getElementById('loginForm');
   const regForm = document.getElementById('registerForm');
@@ -50,7 +50,7 @@
   });
 })();
 
-// Bootstrap-native validation
+// Bootstrap
 document.querySelectorAll('.needs-validation').forEach(form => {
   form.addEventListener('submit', function (e) {
     if (!form.checkValidity()) {
@@ -61,7 +61,7 @@ document.querySelectorAll('.needs-validation').forEach(form => {
   });
 });
 
-// Comment: optimistic append, then real POST persists it
+
 (function () {
   const form = document.getElementById('commentForm');
   const list = document.getElementById('commentList');
@@ -82,5 +82,39 @@ document.querySelectorAll('.needs-validation').forEach(form => {
       '</div>';
     row.querySelector('.small:last-child').textContent = text; // textContent — safe from injection
     list.appendChild(row);
+  });
+})();
+// mention autocomplete
+(function () {
+  const input = document.getElementById('commentInput');
+  const list = document.getElementById('mentionList');
+  const dataEl = document.getElementById('usersData');
+  if (!input || !list || !dataEl) return;
+
+  const users = JSON.parse(dataEl.textContent);
+
+  function showMatches(query, cursorPos) {
+    const matches = users.filter(u => u.name.toLowerCase().includes(query));
+    list.innerHTML = matches.map(u => `<button type="button" class="list-group-item list-group-item-action">@${u.name}</button>`).join('');
+
+    list.querySelectorAll('button').forEach((btn, i) => {
+      btn.addEventListener('click', () => {
+        const name = matches[i].name.replace(/\s+/g, '');
+        input.value = input.value.slice(0, cursorPos).replace(/@\w*$/, '@' + name + ' ') + input.value.slice(cursorPos);
+        list.classList.add('d-none');
+        input.focus();
+      });
+    });
+    list.classList.toggle('d-none', matches.length === 0);
+  }
+
+  input.addEventListener('input', () => {
+    const cursorPos = input.selectionStart;
+    const match = input.value.slice(0, cursorPos).match(/@(\w*)$/);
+    match ? showMatches(match[1].toLowerCase(), cursorPos) : list.classList.add('d-none');
+  });
+
+  document.addEventListener('click', e => {
+    if (e.target !== input) list.classList.add('d-none');
   });
 })();

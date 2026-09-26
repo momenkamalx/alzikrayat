@@ -38,17 +38,23 @@
               </form>
               {% endif %}
             </div>
-            <div class="small">{{ c.text }}</div>
+            <div class="small">{{ c.text | mention_highlight }}</div>
           </div>
         </div>
         {% endfor %}
       </div>
 
       {% if session.user %}
-      <form class="d-flex gap-2 mt-3" id="commentForm" action="{{ url_for('comment_store', photo_id=photo.id) }}" method="POST">
-        <input type="text" class="form-control" name="comment" placeholder="Add a comment…" maxlength="500" required>
+      <form class="d-flex gap-2 mt-3 position-relative" id="commentForm" action="{{ url_for('comment_store', photo_id=photo.id) }}" method="POST">
+        <div class="flex-grow-1 position-relative">
+          <input type="text" class="form-control" id="commentInput" name="comment" placeholder="Add a comment… (@ to mention)" maxlength="500" required autocomplete="off">
+          <div id="mentionList" class="list-group position-absolute w-100 d-none" style="z-index:10;top:100%;"></div>
+        </div>
         <button type="submit" class="btn btn-primary">Post</button>
       </form>
+      <script id="usersData" type="application/json">
+        [{% for u in users %}{"name": "{{ u.first_name }} {{ u.last_name }}"}{% if not loop.last %},{% endif %}{% endfor %}]
+      </script>
       {% else %}
       <p class="text-body-secondary small">Log in to leave a comment.</p>
       {% endif %}

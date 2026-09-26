@@ -2,7 +2,7 @@ from flask import render_template, request, redirect, url_for, session, flash
 from app.controllers import auth_controller, photo_controller, comment_controller
 from app.models.photo import get_all_photos, get_photo
 from app.models.comment import get_comments_for_photo, count_all_comments
-from app.models.user import count_all_users
+from app.models.user import count_all_users,  get_all_users
 
 
 
@@ -51,7 +51,8 @@ def register_routes(app):
             }
             for c in raw_comments
         ]
-        return render_template("photos/show.html", photo=photo, comments=comments)
+        users = get_all_users()
+        return render_template("photos/show.html", photo=photo, comments=comments, users=users)
 
     @app.route("/photo/create")
     def photo_create():
