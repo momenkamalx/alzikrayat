@@ -1,5 +1,6 @@
 from app.config import get_connection
 
+ #Return every comment on one photo with the  commenter name oldest first
 def get_comments_for_photo(photo_id):
     conn = get_connection()
     with conn.cursor() as cur:
@@ -15,6 +16,7 @@ def get_comments_for_photo(photo_id):
     conn.close()
     return result
 
+#Insert a new comment on the photo by the user
 def insert_comment(photo_id, user_id, text):
     conn = get_connection()
     with conn.cursor() as cur:
@@ -25,6 +27,7 @@ def insert_comment(photo_id, user_id, text):
         conn.commit()
     conn.close()
 
+#Return one comment's full row or none
 def get_comment(comment_id):
     conn = get_connection()
     with conn.cursor() as cur:
@@ -33,6 +36,7 @@ def get_comment(comment_id):
     conn.close()
     return result
 
+  #Return the total number of comments from all photos
 def count_all_comments():
     conn = get_connection()
     with conn.cursor() as cur:
@@ -41,6 +45,7 @@ def count_all_comments():
     conn.close()
     return result["total"]
 
+#Delete a comment by id Caller is responsible for the ownership check
 def delete_comment(comment_id):
     conn = get_connection()
     with conn.cursor() as cur:

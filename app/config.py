@@ -1,5 +1,8 @@
 import pymysql
 
+
+#Open and return a new MySQL connection to the alz DB
+
 def get_connection():
     return pymysql.connect(
         host="localhost",      

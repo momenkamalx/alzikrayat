@@ -1,5 +1,6 @@
 from app.config import get_connection
 
+ #Return every photo with the uploader name new posts first
 def get_all_photos():
     conn = get_connection()
     with conn.cursor() as cur:
@@ -13,6 +14,7 @@ def get_all_photos():
     conn.close()
     return result
 
+#Return one photo with the uploader name or none
 def get_photo(photo_id):
     conn = get_connection()
     with conn.cursor() as cur:
@@ -25,6 +27,7 @@ def get_photo(photo_id):
     conn.close()
     return result
 
+ #Insert a new photo linking with the uploading user
 def insert_photo(user_id, file_name, title, description):
     conn = get_connection()
     with conn.cursor() as cur:
@@ -34,7 +37,8 @@ def insert_photo(user_id, file_name, title, description):
         )
         conn.commit()
     conn.close()
-
+ 
+ #Delete a photo by id caller is responsible for the ownership check
 def delete_photo(photo_id):
     conn = get_connection()
     with conn.cursor() as cur:

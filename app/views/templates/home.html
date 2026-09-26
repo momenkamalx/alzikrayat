@@ -9,9 +9,9 @@
       <h1 class="display-5 mb-3">Keep your memory and share your moment</h1>
       <p class="text-body-secondary mb-4">Alzikrayat is a place to upload memories with the people you love</p>
       {% if session.user %}
-        <a href="{{ url_for('photo_create') }}" class="btn btn-primary me-2">Upload a photo</a>
+        <a href="/photo/create" class="btn btn-primary me-2">Upload a photo</a>
       {% else %}
-        <a href="{{ url_for('login') }}" class="btn btn-primary me-2">Create an account</a>
+        <a href="/login" class="btn btn-primary me-2">Create an account</a>
       {% endif %}
       <a href="#photo-gallery" class="btn btn-outline-light">Browse gallery</a>
     </div>
@@ -44,7 +44,7 @@
   <div class="row g-3" id="photoGrid">
     {% for p in photos %}
     <div class="col-md-4 gallery-item">
-      <a href="{{ url_for('photo_show', photo_id=p.id) }}" class="card text-decoration-none">
+      <a href="/photo/{{ p.id }}" class="card text-decoration-none">
        <img src="{{ url_for('static', filename='uploads/' + p.file_name) }}" class="photo-thumbnail" alt="{{ p.title }}">
         <div class="card-body">
           <h3 class="h6 mb-1 text-body">{{ p.title }}</h3>

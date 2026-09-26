@@ -13,17 +13,17 @@
 
 <nav class="navbar navbar-expand-md">
   <div class="container">
-    <a class="navbar-brand" href="{{ url_for('home') }}">alzikra<span>yat</span></a>
+    <a class="navbar-brand" href="/">alzikra<span>yat</span></a>
     <div class="d-flex align-items-center gap-3">
-      <a class="nav-link d-none d-md-inline" href="{{ url_for('gallery') }}">Gallery</a>
-      <a class="nav-link d-none d-md-inline" href="{{ url_for('home') }}#about">About</a>
+      <a class="nav-link d-none d-md-inline" href="/photos">Gallery</a>
+      <a class="nav-link d-none d-md-inline" href="/#about">About</a>
       {% if session.user %}
-        <a class="nav-link d-none d-md-inline" href="{{ url_for('photo_create') }}">Upload</a>
+        <a class="nav-link d-none d-md-inline" href="/photo/create">Upload</a>
         <span class="text-body-secondary small">Hi {{ session.user.first_name }}</span>
-        <a href="{{ url_for('logout') }}" class="btn btn-outline-light btn-sm">Logout</a>
+        <a href="/logout" class="btn btn-outline-light btn-sm">Logout</a>
       {% else %}
         <span class="text-body-secondary small d-none d-sm-inline">Please login</span>
-        <a href="{{ url_for('login') }}" class="btn btn-primary btn-sm">Login</a>
+        <a href="/login" class="btn btn-primary btn-sm">Login</a>
       {% endif %}
     </div>
   </div>

@@ -19,7 +19,7 @@
     {% for p in photos %}
     <div class="col-md-4 gallery-item">
       <div class="card position-relative">
-        <a href="{{ url_for('photo_show', photo_id=p.id) }}" class="text-decoration-none">
+        <a href="/photo/{{ p.id }}" class="text-decoration-none">
           <img src="{{ url_for('static', filename='uploads/' + p.file_name) }}" class="photo-thumbnail" alt="{{ p.title }}">
           <div class="card-body">
             <h3 class="h6 mb-1 text-body">{{ p.title }}</h3>
@@ -27,7 +27,7 @@
           </div>
         </a>
         {% if session.user and session.user.id == p.user_id %}
-        <form action="{{ url_for('photo_delete', photo_id=p.id) }}" method="POST"
+        <form action="/photo/{{ p.id }}/delete" method="POST"
               class="position-absolute top-0 end-0 m-2" onsubmit="return confirm('Delete this photo?');">
           <button type="submit" class="btn btn-sm btn-danger">✕</button>
         </form>

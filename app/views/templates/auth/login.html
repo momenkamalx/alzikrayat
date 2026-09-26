@@ -17,7 +17,7 @@
       {% endif %}
     {% endwith %}
 
-    <form id="loginForm" action="{{ url_for('login') }}" method="POST" class="needs-validation" novalidate>
+    <form id="loginForm" action="/login" method="POST" class="needs-validation" novalidate>
       <div class="mb-3">
         <label class="form-label small" for="loginEmail">Email</label>
         <input type="email" class="form-control" id="loginEmail" name="email" required>
@@ -31,7 +31,7 @@
       <button type="submit" class="btn btn-primary w-100">Log in</button>
     </form>
 
-    <form id="registerForm" action="{{ url_for('register') }}" method="POST" class="needs-validation d-none" novalidate>
+    <form id="registerForm" action="/register" method="POST" class="needs-validation d-none" novalidate>
       <div class="mb-3">
         <label class="form-label small" for="regFirst">First name</label>
         <input type="text" class="form-control" id="regFirst" name="first_name" pattern="[A-Za-z]{1,50}" required>

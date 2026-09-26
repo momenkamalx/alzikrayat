@@ -1,17 +1,23 @@
 import bcrypt
 import re
 from datetime import datetime
-from flask import session, make_response, redirect, url_for, flash
+from flask import session, make_response, redirect, flash
 from app.models.user import find_by_email, create_user
 
 EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
 
+ #Flash an error message and redirect to the login page
 def _fail(message):
     flash(message)
-    return redirect(url_for("login"))
+    return redirect("/login")
 
-
+"""
+    Validate and create a new user account
+    Checks name format and length, email format, password length,
+    and the email isn't already registered
+    Redirects to login with a flash message
+"""
 def register(form):
     first_name = form.get("first_name", "").strip()
     last_name = form.get("last_name", "").strip()
@@ -32,9 +38,15 @@ def register(form):
     hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
     create_user(first_name, last_name, email, hashed.decode())
     flash("Account created")
-    return redirect(url_for("login"))
+    return redirect("/login")
 
 
+"""
+    Verify email/password against the stored bcrypt hash
+    On success: stores the user in session and sets the 7-day
+    last login cookie and redirects home.
+    On fail: flashes an error and redirects to login.
+"""
 def login(form):
     email = form.get("email", "").strip()
     password = form.get("password", "")
@@ -44,7 +56,7 @@ def login(form):
         return _fail("Email or password is incorrect.")
 
     session["user"] = {"id": user["id"], "first_name": user["first_name"]}
-    resp = make_response(redirect(url_for("home")))
+    resp = make_response(redirect("/"))
     resp.set_cookie(
         "last_login",
         datetime.now().strftime("%Y-%m-%d %H:%M"),
